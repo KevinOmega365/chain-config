@@ -4,6 +4,7 @@ import { Readable } from 'stream'
 
 import workbookToJson from './src/workbook_to_json.js'
 import reshapeJson from './src/reshape_json.js'
+import jsonToSqlInsert from './src/json_to_sql.js'
 
 XLSX.set_fs(fs)
 XLSX.stream.set_readable(Readable)
@@ -29,6 +30,10 @@ const main = () =>
             './workspace/chainsReshaped.json',
             JSON.stringify(chainsReshaped, null, 4)
         )
+
+        const sql = jsonToSqlInsert(chainsReshaped)
+
+        fs.writeFileSync('./output/insertChains.sql', sql)
 
         console.log('ok.')
     }

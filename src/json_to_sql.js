@@ -1,25 +1,26 @@
-import fs from 'fs'
+const tableName = 'ltbl_Import_Mapping_ProArcChains'
 
-const chainsJson = JSON.parse(fs.readFileSync('./chains.json'))
+const objectToSqlValuesTuple = (o) =>
+    `(${
+        Object.values(o)
+        .map(v => typeof v === 'string' ? "'" + v + "'" : v)
+        .join(', ')
+    })`
 
-const keyCounts = {}
-const valueCounts = {}
-const keyValueCounts = {}
 
-for(const sheetName in chainsJson)
+const jsonToSqlInsert = (jsonRecords) =>
 {
-    if(chainsJson[sheetName][1])
-    {
-        for(const [col, header] of Object.entries(chainsJson[sheetName][1]))
-        {
-            keyCounts[col] = keyCounts[col] ? keyCounts[col] + 1 : 1
-            valueCounts[header] = valueCounts[header] ? valueCounts[header] + 1 : 1
-            keyValueCounts[col + header] = keyValueCounts[col + header] ? keyValueCounts[col + header] + 1 : 1
-        }
-    }
+    let sql = ''
+
+    sql += `insert into ${tableName}\n`
+
+    sql += `(\n    ${Object.keys(jsonRecords[0]).join(',\n    ')}\n)\n`
+
+    sql += 'values\n'
+
+    sql += '    ' + jsonRecords.map(objectToSqlValuesTuple).join(',\n    ')
+
+    return sql
 }
 
-console.log(keyCounts)
-console.log(valueCounts)
-
-// console.log(Object.keys(chainsJson))
+export default jsonToSqlInsert

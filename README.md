@@ -4,6 +4,14 @@ Ad hoc transformation from an Excel workbook to SQL via JSON
 
 ## Setup
 
+### NPM
+
+Open the terminal inside the chain-config directory
+
+``` Terminal
+npm install
+```
+
 ### From scratch
 
 * Make a folder
