@@ -42,9 +42,9 @@ const columnMapping = {
     'Chain': 'Chain',
     'Milestone': 'ReasonForIssue',
     'Description': 'Description',
-    'Pims DCS': 'Default',
-    'Interface contract for review': 'PriorityTwo',
-    'Safety Critical ': 'PriorityOne',
+    'Pims DCS': 'DefaultStep',
+    'Interface contract for review': 'PriorityTwoStep',
+    'Safety Critical ': 'PriorityOneStep',
     'Cumulative progress %': 'CumulativeProgress',
     'Step Progress %': 'StepProgress'
 }
@@ -73,11 +73,15 @@ const reshapeJson = (raw) =>
                 GroupRef: sheetNameMapping[sheetName].groupRef,
                 Domain: sheetNameMapping[sheetName].domain,
                 ... Object.fromEntries(
-                    Object.entries(row).map(([key, value]) =>
-                    [
-                        columnMapping[headerMapping[key]],
-                        value
-                    ])
+                    Object.entries(row)
+                        .filter(([key]) => // only map defined Excel columns
+                            headerMapping[key] !== undefined
+                        )
+                        .map(([key, value]) =>
+                        [
+                            columnMapping[headerMapping[key]],
+                            value
+                        ])
                 )
             })
         }
